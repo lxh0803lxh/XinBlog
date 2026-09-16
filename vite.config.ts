@@ -34,7 +34,7 @@ export default defineConfig({
     host: true,
   },
   build: {
-    outDir: '../deploy',
+    outDir: 'dist',
     emptyOutDir: false,
   },
 })
