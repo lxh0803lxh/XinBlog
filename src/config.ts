@@ -10,8 +10,8 @@ export function toAbsoluteCloudUrl(relative: string): string {
 
 
 export const APP_VERSION = import.meta.env.VITE_APP_VERSION || '0.5.6';
-export const SITE_NAME = import.meta.env.VITE_SITE_NAME || 'XinBlog';
-export const SITE_HOMEPAGE_URL = import.meta.env.VITE_SITE_URL || 'https://xinblog.zhyhome.top';
+export const SITE_NAME = import.meta.env.VITE_SITE_NAME || '新云修栈';
+export const SITE_HOMEPAGE_URL = import.meta.env.VITE_SITE_URL || 'https://xinyy.cc.cd';
 
 
 export const DISABLE_CONTEXT_MENU = import.meta.env.VITE_DISABLE_CONTEXT_MENU === 'true';
