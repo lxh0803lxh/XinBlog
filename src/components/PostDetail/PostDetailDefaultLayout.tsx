@@ -22,7 +22,7 @@ export function PostDetailDefaultLayout({
     <Fade in timeout={400}>
       <Container maxWidth="lg" sx={{ py: 4, pb: 8, px: { xs: 1, sm: 2, md: 3 } }}>
         <PostDetailHeader post={post} showBackButton={false} />
-        <PostDetailContent content={post.content} onHeadingsExtracted={onHeadingsExtracted} />
+        <PostDetailContent content={post.content} openMode={post.openMode} targetUrl={post.targetUrl} onHeadingsExtracted={onHeadingsExtracted} />
         <PostDetailFooter post={post} siblings={siblings} />
         <CommentSection slug={post.slug} />
       </Container>

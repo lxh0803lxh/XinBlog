@@ -195,6 +195,22 @@ function ensureDbConfig(env) {
   }
 }
 
+let postsOpenModeColumnsReady = false;
+async function ensurePostsOpenModeColumns(env) {
+  if (postsOpenModeColumnsReady) return;
+  for (const statement of [
+    "ALTER TABLE posts ADD COLUMN open_mode TEXT NOT NULL DEFAULT 'content'",
+    'ALTER TABLE posts ADD COLUMN target_url TEXT',
+  ]) {
+    try {
+      await env.DB_POSTS.prepare(statement).run();
+    } catch (error) {
+      if (!String(error?.message || error).toLowerCase().includes('duplicate column')) throw error;
+    }
+  }
+  postsOpenModeColumnsReady = true;
+}
+
 
 
 
@@ -868,6 +884,7 @@ async function getSiteConfig(env) {
 }
 
 async function listPosts(env, url) {
+  await ensurePostsOpenModeColumns(env);
   const page = Math.max(1, parseInt(url.searchParams.get('page') || '1', 10));
   const limit = Math.min(50, Math.max(1, parseInt(url.searchParams.get('limit') || '10', 10)));
   const tag = url.searchParams.get('tag');
@@ -880,7 +897,7 @@ async function listPosts(env, url) {
     const tagRow = await env.DB_POSTS.prepare('SELECT id FROM tags WHERE slug = ?').bind(tag).first();
     if (!tagRow) return jsonResponse(0, { list: [], total: 0, page, limit });
     posts = await env.DB_POSTS.prepare(
-      `SELECT p.id, p.title, p.slug, p.excerpt, p.content, p.cover_base64, p.author_id, p.status, p.views, p.reading_time, p.created_at, p.updated_at
+      `SELECT p.id, p.title, p.slug, p.excerpt, p.content, p.cover_base64, p.open_mode, p.target_url, p.author_id, p.status, p.views, p.reading_time, p.created_at, p.updated_at
        FROM posts p
        JOIN post_tags pt ON p.id = pt.post_id
        WHERE pt.tag_id = ? AND p.status = 'published'
@@ -897,7 +914,7 @@ async function listPosts(env, url) {
     total = countRow.c;
   } else {
     posts = await env.DB_POSTS.prepare(
-      `SELECT id, title, slug, excerpt, content, cover_base64, author_id, status, views, reading_time, created_at, updated_at
+      `SELECT id, title, slug, excerpt, content, cover_base64, open_mode, target_url, author_id, status, views, reading_time, created_at, updated_at
        FROM posts WHERE status = 'published' ORDER BY created_at DESC LIMIT ? OFFSET ?`
     )
       .bind(limit, offset)
@@ -932,9 +949,10 @@ async function fillPostTags(env, posts) {
 }
 
 async function getPost(env, path) {
+  await ensurePostsOpenModeColumns(env);
   const slug = path.replace('/api/v1/posts/', '');
   const post = await env.DB_POSTS.prepare(
-    `SELECT id, title, slug, excerpt, content, cover_base64, author_id, status, views, reading_time, created_at, updated_at
+    `SELECT id, title, slug, excerpt, content, cover_base64, open_mode, target_url, author_id, status, views, reading_time, created_at, updated_at
      FROM posts WHERE slug = ? AND status = 'published'`
   )
     .bind(slug)
@@ -1352,6 +1370,7 @@ async function getDashboard(request, env, user) {
 }
 
 async function listAdminPosts(request, env, user) {
+  await ensurePostsOpenModeColumns(env);
   const url = new URL(request.url);
   const page = Math.max(1, parseInt(url.searchParams.get('page') || '1', 10));
   const limit = Math.min(100, Math.max(1, parseInt(url.searchParams.get('limit') || '10', 10)));
@@ -1386,12 +1405,13 @@ async function listAdminPosts(request, env, user) {
 }
 
 async function getAdminPost(request, env, user) {
+  await ensurePostsOpenModeColumns(env);
   const url = new URL(request.url);
   const id = url.searchParams.get('id')
     ? parseInt(url.searchParams.get('id'), 10)
     : parseInt(request.url.split('/').pop(), 10);
   const post = await env.DB_POSTS.prepare(
-    `SELECT id, title, slug, excerpt, content, cover_base64, author_id, status, views, reading_time, created_at, updated_at
+    `SELECT id, title, slug, excerpt, content, cover_base64, open_mode, target_url, author_id, status, views, reading_time, created_at, updated_at
      FROM posts WHERE id = ?`
   )
     .bind(id)
@@ -1422,6 +1442,7 @@ async function listAdminTags(request, env, user) {
 }
 
 async function createPost(request, env, user) {
+  await ensurePostsOpenModeColumns(env);
   const body = await request.json();
   const title = String(body.title || '').trim();
   let slug = String(body.slug || '').trim();
@@ -1430,17 +1451,20 @@ async function createPost(request, env, user) {
   const cover = body.coverBase64 || null;
   const tagIds = body.tagIds || [];
   const status = body.status === 'draft' ? 'draft' : 'published';
+  const openMode = body.openMode === 'webpage' ? 'webpage' : 'content';
+  const targetUrl = openMode === 'webpage' ? String(body.targetUrl || '').trim() : null;
 
-  if (!title || !content) return jsonResponse(400, null, '标题和内容必填');
+  if (!title || (openMode === 'content' && !content)) return jsonResponse(400, null, openMode === 'content' ? '标题和内容必填' : '标题必填');
+  if (openMode === 'webpage' && !/^https?:\/\//i.test(targetUrl)) return jsonResponse(400, null, '网页地址必须以 http:// 或 https:// 开头');
   if (!slug) slug = slugify(title);
   if (!slug) slug = `post-${Date.now()}`;
 
   const time = now();
   try {
     const result = await env.DB_POSTS.prepare(
-      'INSERT INTO posts (title, slug, excerpt, content, cover_base64, author_id, status, reading_time, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+      'INSERT INTO posts (title, slug, excerpt, content, cover_base64, open_mode, target_url, author_id, status, reading_time, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
     )
-      .bind(title, slug, excerpt, content, cover, user.id, status, readingTime(content), time, time)
+      .bind(title, slug, excerpt, content, cover, openMode, targetUrl, user.id, status, readingTime(content), time, time)
       .run();
     const postId = result.meta ? result.meta.last_row_id : null;
 
@@ -1460,10 +1484,21 @@ async function createPost(request, env, user) {
 }
 
 async function updatePost(request, env, user) {
+  await ensurePostsOpenModeColumns(env);
   const id = parseInt(request.url.split('/').pop(), 10);
   const body = await request.json();
   const updates = [];
   const params = [];
+
+  if (body.openMode !== undefined) {
+    const openMode = body.openMode === 'webpage' ? 'webpage' : 'content';
+    const targetUrl = openMode === 'webpage' ? String(body.targetUrl || '').trim() : null;
+    if (openMode === 'webpage' && !/^https?:\/\//i.test(targetUrl)) return jsonResponse(400, null, '网页地址必须以 http:// 或 https:// 开头');
+    updates.push('open_mode = ?');
+    params.push(openMode);
+    updates.push('target_url = ?');
+    params.push(targetUrl);
+  }
 
   if (body.title !== undefined) {
     updates.push('title = ?');

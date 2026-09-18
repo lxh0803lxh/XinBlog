@@ -6,11 +6,27 @@ import type { HeadingItem } from '@/components/Post/TableOfContents';
 
 interface PostDetailContentProps {
   content: string;
+  openMode?: 'content' | 'webpage';
+  targetUrl?: string;
   onHeadingsExtracted?: (headings: HeadingItem[]) => void;
 }
 
-export function PostDetailContent({ content, onHeadingsExtracted }: PostDetailContentProps) {
+export function PostDetailContent({ content, openMode = 'content', targetUrl, onHeadingsExtracted }: PostDetailContentProps) {
   const spacing = resolveSpacingConfig(useSiteStore((s) => s.config.spacing));
+  if (openMode === 'webpage' && targetUrl) {
+    return (
+      <Box sx={{ mt: 2, width: '100%', minHeight: { xs: '70vh', md: '80vh' }, overflow: 'hidden', borderRadius: 1 }}>
+        <Box
+          component="iframe"
+          src={targetUrl}
+          title="文章网页内容"
+          sandbox="allow-forms allow-modals allow-popups allow-presentation allow-scripts"
+          referrerPolicy="no-referrer"
+          sx={{ display: 'block', width: '100%', height: { xs: '70vh', md: '80vh' }, border: 0, bgcolor: 'background.paper' }}
+        />
+      </Box>
+    );
+  }
   return (
     <Box
       className="post-detail-prose"

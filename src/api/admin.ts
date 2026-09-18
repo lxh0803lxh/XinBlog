@@ -79,6 +79,8 @@ export interface AdminPost {
   reading_time: number;
   created_at: string;
   updated_at: string;
+  open_mode?: 'content' | 'webpage';
+  target_url?: string;
   tags?: AdminTag[];
 }
 
@@ -90,6 +92,8 @@ export interface AdminPostInput {
   coverBase64?: string;
   status?: 'published' | 'draft';
   tagIds?: number[];
+  openMode?: 'content' | 'webpage';
+  targetUrl?: string;
 }
 
 export async function fetchAdminPosts(page = 1, limit = 10): Promise<PagedResult<AdminPost> | null> {

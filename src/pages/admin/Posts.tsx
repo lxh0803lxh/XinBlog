@@ -95,6 +95,8 @@ const emptyForm = {
   slug: '',
   excerpt: '',
   content: '',
+  openMode: 'content' as 'content' | 'webpage',
+  targetUrl: '',
   coverBase64: '',
   status: 'published' as 'published' | 'draft',
   tagIds: [] as number[],
@@ -306,6 +308,8 @@ export function AdminPosts() {
       slug: full.slug,
       excerpt: full.excerpt || '',
       content: full.content,
+      openMode: full.open_mode === 'webpage' ? 'webpage' : 'content',
+      targetUrl: full.target_url || '',
       coverBase64: full.cover_base64 || '',
       status: full.status,
       tagIds: full.tags?.map((t) => t.id) || [],
@@ -423,8 +427,12 @@ export function AdminPosts() {
   };
 
   const handleSave = async () => {
-    if (!form.title.trim() || !form.content.trim()) {
-      setFormError('标题和内容必填');
+    if (!form.title.trim() || (form.openMode === 'content' && !form.content.trim())) {
+      setFormError(form.openMode === 'content' ? '标题和内容必填' : '标题必填');
+      return;
+    }
+    if (form.openMode === 'webpage' && !/^https?:\/\//i.test(form.targetUrl.trim())) {
+      setFormError('网页地址必须以 http:// 或 https:// 开头');
       return;
     }
     setFormError('');
@@ -438,6 +446,8 @@ export function AdminPosts() {
       coverBase64: form.coverBase64 || undefined,
       status: form.status,
       tagIds: form.tagIds,
+      openMode: form.openMode,
+      targetUrl: form.openMode === 'webpage' ? form.targetUrl.trim() : undefined,
     };
 
     let result;
@@ -1345,6 +1355,29 @@ export function AdminPosts() {
             required
             placeholder="输入文章标题"
           />
+          <FormControl fullWidth>
+            <InputLabel id="open-mode-label">打开方式</InputLabel>
+            <Select
+              labelId="open-mode-label"
+              value={form.openMode}
+              label="打开方式"
+              onChange={(e) => setForm((prev) => ({ ...prev, openMode: e.target.value as 'content' | 'webpage' }))}
+            >
+              <MenuItem value="content">打开文章正文</MenuItem>
+              <MenuItem value="webpage">打开指定网页</MenuItem>
+            </Select>
+          </FormControl>
+          {form.openMode === 'webpage' && (
+            <TextField
+              label="网页地址"
+              value={form.targetUrl}
+              onChange={(e) => setForm((prev) => ({ ...prev, targetUrl: e.target.value }))}
+              fullWidth
+              required
+              placeholder="https://example.com/index.html"
+              helperText="支持部署后的 index.html 或其他 http/https 网页地址，将在当前文章页内加载。"
+            />
+          )}
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', minWidth: 0 }}>
             <TextField
               label="Slug"
@@ -1398,7 +1431,7 @@ export function AdminPosts() {
 
           </Box>
 
-          <Box>
+          {form.openMode === 'content' && <Box>
             <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}>
               <Typography variant="body2">摘要</Typography>
 
@@ -1428,7 +1461,7 @@ export function AdminPosts() {
               </Alert>
 
             )}
-          </Box>
+          </Box>}
 
           <Box>
             <Typography variant="body2" sx={{ mb: 1 }}>

@@ -70,7 +70,7 @@ export function PostDetailGlassLayout({
       >
         <Box sx={{ p: { xs: 2, sm: 3, md: 6 } }}>
           <PostDetailHeader post={post} />
-          <PostDetailContent content={post.content} onHeadingsExtracted={onHeadingsExtracted} />
+          <PostDetailContent content={post.content} openMode={post.openMode} targetUrl={post.targetUrl} onHeadingsExtracted={onHeadingsExtracted} />
           <PostDetailFooter post={post} siblings={siblings} />
           <CommentSection slug={post.slug} />
         </Box>

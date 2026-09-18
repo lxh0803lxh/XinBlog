@@ -22,6 +22,8 @@ export interface BackendPost {
   reading_time: number;
   created_at: string;
   updated_at: string;
+  open_mode?: 'content' | 'webpage';
+  target_url?: string;
   tags?: BackendTag[];
 }
 
@@ -69,6 +71,8 @@ export function transformPost(backend: BackendPost, defaultAuthor = '星语'): P
     updatedAt: backend.updated_at,
     readingTime: backend.reading_time || 1,
     views: backend.views ?? 0,
+    openMode: backend.open_mode === 'webpage' ? 'webpage' : 'content',
+    targetUrl: backend.target_url || undefined,
   };
 }
 

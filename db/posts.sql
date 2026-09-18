@@ -5,6 +5,8 @@ CREATE TABLE IF NOT EXISTS posts (
   excerpt TEXT,
   content TEXT NOT NULL,
   cover_base64 TEXT,
+  open_mode TEXT NOT NULL DEFAULT 'content',
+  target_url TEXT,
   author_id INTEGER NOT NULL,
   status TEXT NOT NULL DEFAULT 'published',
   views INTEGER NOT NULL DEFAULT 0,

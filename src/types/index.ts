@@ -38,6 +38,8 @@ export interface Post {
   updatedAt: string;
   readingTime: number;
   views?: number;
+  openMode?: 'content' | 'webpage';
+  targetUrl?: string;
 }
 
 export interface UserFontFile {
