@@ -220,8 +220,6 @@ export interface SpacingConfig {
   
   footerPaddingY: SpacingValue;
   
-  footerLinkGap: SpacingValue;
-  
   articleHeadingGap: SpacingValue;
   
   articleParagraphGap: SpacingValue;
@@ -278,8 +276,6 @@ export interface SiteConfig {
   postDetailTheme?: PostDetailThemeConfig;
   chatBubbleTheme?: ChatBubbleThemeConfig;
   nav?: NavConfig;
-  termsAgreement?: string;
-  termsPrivacy?: string;
   spacing?: SpacingConfig;
 }
 

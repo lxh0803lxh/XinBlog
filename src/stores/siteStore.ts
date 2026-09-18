@@ -132,8 +132,6 @@ const defaultConfig: SiteConfig = {
       hideOnScroll: true,
     },
   },
-  termsAgreement: '',
-  termsPrivacy: '',
 };
 
 const SITE_CACHE_KEY = 'site-config-cache';

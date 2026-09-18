@@ -13,8 +13,6 @@ import {
   Fade,
   useTheme,
   CircularProgress,
-  Checkbox,
-  FormControlLabel,
 } from '@mui/material';
 import { Visibility, VisibilityOff, Lock, Person, Email, VpnKey } from '@mui/icons-material';
 import { useAuthStore } from '@/stores/authStore';
@@ -46,7 +44,6 @@ export function AdminLogin() {
   const [loginRequired, setLoginRequired] = useState(false);
   const [registerRequired, setRegisterRequired] = useState(false);
   const [captchaPayload, setCaptchaPayload] = useState<CaptchaPayload | null>(null);
-  const [agreed, setAgreed] = useState(false);
   const captchaRef = useRef<HumanCaptchaHandle>(null);
   
   const sendCodePendingRef = useRef(false);
@@ -91,7 +88,6 @@ export function AdminLogin() {
     setEmail('');
     setCode('');
     setShowPassword(false);
-    setAgreed(false);
   }, [tab]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -483,63 +479,6 @@ export function AdminLogin() {
                   }}
                 />
               )}
-              {tab === 1 && (
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={agreed}
-                      onChange={(e) => setAgreed(e.target.checked)}
-                      size="small"
-                      sx={{
-                        color: (theme) => alpha(theme.palette.primary.main, 0.4),
-                        '&.Mui-checked': {
-                          color: 'primary.main',
-                        },
-                      }}
-                    />
-                  }
-                  label={
-                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.8rem', sm: '0.85rem' } }}>
-                      我已阅读并同意{' '}
-                      <Typography
-                        component={Link}
-                        to="/agreement"
-                        target="_blank"
-                        variant="body2"
-                        sx={{
-                          color: 'primary.main',
-                          textDecoration: 'underline',
-                          fontWeight: 500,
-                          fontSize: 'inherit',
-                          '&:hover': { opacity: 0.8 },
-                        }}
-                      >
-                        用户协议
-                      </Typography>
-
-                      {' 和 '}
-                      <Typography
-                        component={Link}
-                        to="/privacy"
-                        target="_blank"
-                        variant="body2"
-                        sx={{
-                          color: 'primary.main',
-                          textDecoration: 'underline',
-                          fontWeight: 500,
-                          fontSize: 'inherit',
-                          '&:hover': { opacity: 0.8 },
-                        }}
-                      >
-                        隐私政策
-                      </Typography>
-
-                    </Typography>
-
-                  }
-                  sx={{ m: 0 }}
-                />
-              )}
               {tab === 0 && enableForgot && (
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: -1 }}>
                   <Typography
@@ -563,7 +502,7 @@ export function AdminLogin() {
                 type="submit"
                 variant="contained"
                 size="large"
-                disabled={loading || (requiresCurrent && !captchaPayload) || (tab === 1 && !agreed)}
+                disabled={loading || (requiresCurrent && !captchaPayload)}
                 startIcon={loading ? <CircularProgress size={18} color="inherit" /> : undefined}
                 sx={{
                   mt: 1,

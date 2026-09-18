@@ -11,8 +11,6 @@ export const DEFAULT_SPACING: SpacingConfig = {
   
   footerPaddingY: { mobile: 32, desktop: 32 },
   
-  footerLinkGap: { mobile: 12, desktop: 20 },
-  
   articleHeadingGap: { mobile: 32, desktop: 32 },
   
   articleParagraphGap: { mobile: 16, desktop: 16 },
@@ -50,7 +48,6 @@ export function resolveSpacingConfig(raw?: SiteConfig['spacing']): SpacingConfig
     navPaddingX: resolveValue(raw.navPaddingX, DEFAULT_SPACING.navPaddingX),
     navGap: resolveValue(raw.navGap, DEFAULT_SPACING.navGap),
     footerPaddingY: resolveValue(raw.footerPaddingY, DEFAULT_SPACING.footerPaddingY),
-    footerLinkGap: resolveValue(raw.footerLinkGap, DEFAULT_SPACING.footerLinkGap),
     articleHeadingGap: resolveValue(raw.articleHeadingGap, DEFAULT_SPACING.articleHeadingGap),
     articleParagraphGap: resolveValue(raw.articleParagraphGap, DEFAULT_SPACING.articleParagraphGap),
     postListGap: resolveValue(raw.postListGap, DEFAULT_SPACING.postListGap),

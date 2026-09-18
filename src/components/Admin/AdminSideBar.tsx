@@ -19,7 +19,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Dashboard,
-  Description,
   Diversity3,
   Forum,
   Group,
@@ -67,7 +66,6 @@ const adminNavItems: NavItem[] = [
   { title: '看板娘', path: '/admin/live2d', icon: <SmartToy fontSize="small" />, superOnly: true },
   { title: '音乐播放器', path: '/admin/music', icon: <MusicNote fontSize="small" />, superOnly: true },
   { title: '主题设置', path: '/admin/themes', icon: <Style fontSize="small" />, superOnly: true },
-  { title: '协议管理', path: '/admin/terms', icon: <Description fontSize="small" />, superOnly: true },
   { title: '高级设置', path: '/admin/advanced', icon: <Settings fontSize="small" />, superOnly: true },
   { title: '用户管理', path: '/admin/users', icon: <Group fontSize="small" />, superOnly: true },
 ];

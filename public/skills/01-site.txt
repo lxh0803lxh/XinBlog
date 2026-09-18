@@ -88,13 +88,6 @@ desc = 读取聊天室相关设置（开关、房间上限等）。无参数。
 params = {}
 
 ---
-skill = site.terms.update
-name = 更新协议/隐私政策
-visible = true
-desc = 【写操作，需确认，仅站主】更新用户协议与隐私政策内容（Markdown）。参数 termsAgreement / termsPrivacy 至少一个。
-params = {"type":"object","properties":{"termsAgreement":{"type":"string","description":"用户协议 Markdown 内容"},"termsPrivacy":{"type":"string","description":"隐私政策 Markdown 内容"}},"additionalProperties":false}
-
----
 skill = site.info.update
 name = 更新站点信息
 visible = true

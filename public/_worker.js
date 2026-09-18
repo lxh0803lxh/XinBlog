@@ -5926,7 +5926,6 @@ const SKILL_WRITE = {
   'user.delete': { handler: deleteAdminUser, method: 'DELETE', keyParam: 'id', params: [], superAdmin: true },
   
   'site.settings.emailTemplate.update': { handler: updateEmailTemplateSettings, method: 'PATCH', keyParam: null, params: ['kind', 'subject', 'html', 'text'], superAdmin: true },
-  'site.terms.update': { handler: updateSettings, method: 'PATCH', keyParam: null, params: ['termsAgreement', 'termsPrivacy'], superAdmin: true, wrapSite: true },
   'site.info.update': { handler: updateSettings, method: 'PATCH', keyParam: null, params: ['description', 'announcement', 'title', 'subtitle'], superAdmin: true, wrapSite: true },
   
   'friend.update': { handler: updateFriend, method: 'PATCH', keyParam: 'id', params: ['name', 'url', 'description', 'avatar', 'sortOrder'], superAdmin: false },
@@ -5985,7 +5984,6 @@ function describeWriteAction(skillId, args) {
       const which = args.kind === 'reset' ? '找回密码' : '通用';
       return `更新${which}邮件模板（主题：${brief(args.subject)}）`;
     }
-    case 'site.terms.update': return `更新协议/隐私政策内容（${args.termsAgreement !== undefined ? '用户协议' : ''}${args.termsPrivacy !== undefined ? (args.termsAgreement !== undefined ? '、' : '') + '隐私政策' : ''}）`;
     case 'site.info.update': return `更新站点信息（${Object.keys(args || {}).map((k) => k).filter((k) => args[k] !== undefined).join('、') || '无' }）`;
     case 'friend.update': return `编辑友链（id ${brief(args.id)}${args.name ? '，名称 ' + brief(args.name) : ''}）`;
     case 'friend.application.delete': return `删除友链申请（id ${brief(args.id)}）`;
@@ -6418,16 +6416,6 @@ const UNDO_MAP = {
       return { ok: true, message: '已恢复邮件模板' };
     },
   },
-  'site.terms.update': {
-    snapshot: async (env) => (await getSetting(env, 'site')) || null,
-    after: null,
-    restore: async (env, log) => {
-      const before = safeParse(log.before_data);
-      if (!before) return { ok: false, error: '缺少站点配置快照' };
-      await setSetting(env, 'site', before);
-      return { ok: true, message: '已恢复协议/隐私配置' };
-    },
-  },
   'site.info.update': {
     snapshot: async (env) => (await getSetting(env, 'site')) || null,
     after: null,
@@ -6535,7 +6523,6 @@ function describeWriteDone(skillId, args, result) {
     case 'user.update': return `已修改用户 #${args.id}`;
     case 'user.delete': return `已删除用户 #${args.id}`;
     case 'site.settings.emailTemplate.update': return `已更新邮件模板`;
-    case 'site.terms.update': return `已更新协议/隐私配置`;
     case 'site.info.update': return `已更新站点信息`;
     case 'chat.room.create': return `已创建聊天室「${String(args.name || '').slice(0, 20)}」`;
     case 'chat.room.update': return `已编辑聊天室（${args.key}）`;
@@ -6590,7 +6577,6 @@ function describeUndoPreview(skillId, before) {
         return `将恢复已删除的用户「${trunc(b.user && b.user.username)}」及 ${(b.comments || []).length} 条评论、${(b.likes || []).length} 个点赞`;
       }
       case 'site.settings.emailTemplate.update': return '将邮件模板恢复为操作前内容';
-      case 'site.terms.update': return '将协议/隐私配置恢复为操作前';
       case 'site.info.update': return '将站点信息恢复为操作前';
       case 'chat.room.create': return '将删除新建的聊天室';
       case 'chat.room.update': return before && before.room ? `将聊天室「${trunc(before.room.name)}」恢复为操作前信息及成员` : '将聊天室恢复为操作前状态';

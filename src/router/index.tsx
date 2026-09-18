@@ -33,9 +33,7 @@ const AdminAi = lazy(() => import('@/pages/admin/Ai').then((m) => ({ default: m.
 const AdminMessageWall = lazy(() => import('@/pages/admin/MessageWall').then((m) => ({ default: m.AdminMessageWall })));
 const AdminChat = lazy(() => import('@/pages/admin/Chat').then((m) => ({ default: m.AdminChat })));
 const AdminThemeSettings = lazy(() => import('@/pages/admin/ThemeSettings').then((m) => ({ default: m.AdminThemeSettings })));
-const TermsEditor = lazy(() => import('@/pages/admin/TermsEditor').then((m) => ({ default: m.TermsEditor })));
 const Friends = lazy(() => import('@/pages/Friends').then((m) => ({ default: m.Friends })));
-const Terms = lazy(() => import('@/pages/Terms').then((m) => ({ default: m.Terms })));
 const Profile = lazy(() => import('@/pages/Profile').then((m) => ({ default: m.Profile })));
 const MusicPage = lazy(() => import('@/pages/Music').then((m) => ({ default: m.MusicPage })));
 const MessageWall = lazy(() => import('@/pages/MessageWall').then((m) => ({ default: m.default })));
@@ -189,10 +187,6 @@ export const router = createBrowserRouter([
 
       { path: 'agent', element: <RequireAuth><SuspensePage><Agent /></SuspensePage></RequireAuth> },
       { path: 'agent/:dialogId', element: <RequireAuth><SuspensePage><AgentChat /></SuspensePage></RequireAuth> },
-      { path: 'agreement', element: <SuspensePage><Terms /></SuspensePage> },
-
-      { path: 'privacy', element: <SuspensePage><Terms /></SuspensePage> },
-
       { path: '404', element: <SuspensePage><NotFound /></SuspensePage> },
 
       { path: '*', element: <Navigate to="/404" replace /> },
@@ -241,7 +235,6 @@ export const router = createBrowserRouter([
 
       { path: 'ai', element: <SuspensePage><RequireSuper><AdminAi /></RequireSuper></SuspensePage> },
       { path: 'themes', element: <SuspensePage><RequireSuper><AdminThemeSettings /></RequireSuper></SuspensePage> },
-      { path: 'terms', element: <SuspensePage><RequireSuper><TermsEditor /></RequireSuper></SuspensePage> },
       { path: 'users', element: <SuspensePage><RequireSuper><AdminSettings /></RequireSuper></SuspensePage> },
       { path: '*', element: <Navigate to="/admin" replace /> },
     ],

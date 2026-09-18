@@ -49,11 +49,6 @@ const GROUPS: { title: string; desc: string; items: SpacingItem[] }[] = [
         label: '页脚上下内边距',
         desc: '页脚内容与外边框之间的上下留白，默认 32px。',
       },
-      {
-        key: 'footerLinkGap',
-        label: '底部链接间距',
-        desc: '页脚底部「用户协议 / 隐私政策」链接之间的间距，默认移动 12px / 桌面 20px。',
-      },
     ],
   },
   {
