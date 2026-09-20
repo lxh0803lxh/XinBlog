@@ -75,6 +75,7 @@ import {
   deleteAdminPost,
   fetchAdminTags,
   createAdminTag,
+  fetchExternalPages,
 } from '@/api/admin';
 import { generateAiPost, fetchAiSettings, fetchAiModels, formatOptimize, generateAiSummary, isTextAiModel, AiGenerateError, type AiGeneratedPost, type AiModel } from '@/api/ai';
 import { peekCache } from '@/api/client';
@@ -136,6 +137,7 @@ export function AdminPosts() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [total, setTotal] = useState(postsCache.data?.total || 0);
   const [form, setForm] = useState(emptyForm);
+  const [externalPages, setExternalPages] = useState<string[]>([]);
   const [formError, setFormError] = useState('');
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [editorLoading, setEditorLoading] = useState(false);
@@ -258,6 +260,11 @@ export function AdminPosts() {
     return () => {
       cancelled = true;
     };
+  }, [view]);
+
+  useEffect(() => {
+    if (view !== 'editor') return;
+    fetchExternalPages().then(setExternalPages);
   }, [view]);
 
   useEffect(() => {
@@ -1368,15 +1375,30 @@ export function AdminPosts() {
             </Select>
           </FormControl>
           {form.openMode === 'webpage' && (
-            <TextField
-              label="网页地址"
-              value={form.targetUrl}
-              onChange={(e) => setForm((prev) => ({ ...prev, targetUrl: e.target.value }))}
-              fullWidth
-              required
-              placeholder="/软件库.html 或 https://example.com/index.html"
-              helperText="支持 public 目录中的站内 HTML（如 /软件库.html）或 http/https 网页地址，将在当前文章页内加载。"
-            />
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+              <FormControl sx={{ flex: 1, minWidth: { xs: '100%', sm: 280 } }}>
+                <InputLabel id="external-page-label">选择外接网页</InputLabel>
+                <Select
+                  labelId="external-page-label"
+                  value={externalPages.includes(form.targetUrl) ? form.targetUrl : ''}
+                  label="选择外接网页"
+                  onChange={(e) => setForm((prev) => ({ ...prev, targetUrl: e.target.value }))}
+                >
+                  {externalPages.map((page) => (
+                    <MenuItem key={page} value={page}>{page}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <TextField
+                label="网页地址"
+                value={form.targetUrl}
+                onChange={(e) => setForm((prev) => ({ ...prev, targetUrl: e.target.value }))}
+                sx={{ flex: 1, minWidth: { xs: '100%', sm: 280 } }}
+                required
+                placeholder="/external-pages/软件库.html 或 https://example.com/index.html"
+                helperText={externalPages.length ? '可从左侧选择，也可以手动填写站内路径或外部 http/https 地址。' : '请先将 HTML 放入 public/external-pages/，或手动填写站内路径/外部地址。'}
+              />
+            </Box>
           )}
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', minWidth: 0 }}>
             <TextField

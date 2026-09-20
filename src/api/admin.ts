@@ -96,6 +96,17 @@ export interface AdminPostInput {
   targetUrl?: string;
 }
 
+export async function fetchExternalPages(): Promise<string[]> {
+  try {
+    const res = await fetch('/external-pages.json', { cache: 'no-store' });
+    if (!res.ok) return [];
+    const pages: unknown = await res.json();
+    return Array.isArray(pages) ? pages.filter((page): page is string => typeof page === 'string') : [];
+  } catch {
+    return [];
+  }
+}
+
 export async function fetchAdminPosts(page = 1, limit = 10): Promise<PagedResult<AdminPost> | null> {
   const res = await apiGet<PagedResult<AdminPost>>(`/api/v1/admin/posts?page=${page}&limit=${limit}`);
   if (res.code !== 0 || !res.data) return null;

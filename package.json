@@ -4,9 +4,9 @@
   "version": "0.5.6",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "compile": "tsc -b && vite build",
+    "dev": "node scripts/generate-external-pages.mjs && vite",
+    "build": "node scripts/generate-external-pages.mjs && tsc -b && vite build",
+    "compile": "node scripts/generate-external-pages.mjs && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
