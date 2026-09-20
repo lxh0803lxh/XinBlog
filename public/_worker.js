@@ -196,6 +196,10 @@ function ensureDbConfig(env) {
 }
 
 let postsOpenModeColumnsReady = false;
+function isAllowedPostTargetUrl(value) {
+  return /^(?:https?:\/\/|\/(?!\/))[^\s]+$/i.test(String(value || '').trim());
+}
+
 async function ensurePostsOpenModeColumns(env) {
   if (postsOpenModeColumnsReady) return;
   for (const statement of [
@@ -1455,7 +1459,7 @@ async function createPost(request, env, user) {
   const targetUrl = openMode === 'webpage' ? String(body.targetUrl || '').trim() : null;
 
   if (!title || (openMode === 'content' && !content)) return jsonResponse(400, null, openMode === 'content' ? '标题和内容必填' : '标题必填');
-  if (openMode === 'webpage' && !/^https?:\/\//i.test(targetUrl)) return jsonResponse(400, null, '网页地址必须以 http:// 或 https:// 开头');
+  if (openMode === 'webpage' && !isAllowedPostTargetUrl(targetUrl)) return jsonResponse(400, null, '网页地址需填写 http://、https:// 或站内路径，例如 /软件库.html');
   if (!slug) slug = slugify(title);
   if (!slug) slug = `post-${Date.now()}`;
 
@@ -1493,7 +1497,7 @@ async function updatePost(request, env, user) {
   if (body.openMode !== undefined) {
     const openMode = body.openMode === 'webpage' ? 'webpage' : 'content';
     const targetUrl = openMode === 'webpage' ? String(body.targetUrl || '').trim() : null;
-    if (openMode === 'webpage' && !/^https?:\/\//i.test(targetUrl)) return jsonResponse(400, null, '网页地址必须以 http:// 或 https:// 开头');
+    if (openMode === 'webpage' && !isAllowedPostTargetUrl(targetUrl)) return jsonResponse(400, null, '网页地址需填写 http://、https:// 或站内路径，例如 /软件库.html');
     updates.push('open_mode = ?');
     params.push(openMode);
     updates.push('target_url = ?');

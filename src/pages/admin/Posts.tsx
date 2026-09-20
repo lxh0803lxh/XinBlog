@@ -431,8 +431,8 @@ export function AdminPosts() {
       setFormError(form.openMode === 'content' ? '标题和内容必填' : '标题必填');
       return;
     }
-    if (form.openMode === 'webpage' && !/^https?:\/\//i.test(form.targetUrl.trim())) {
-      setFormError('网页地址必须以 http:// 或 https:// 开头');
+    if (form.openMode === 'webpage' && !/^(?:https?:\/\/|\/(?!\/))[^\s]+$/i.test(form.targetUrl.trim())) {
+      setFormError('网页地址需填写 http://、https:// 或站内路径，例如 /软件库.html');
       return;
     }
     setFormError('');
@@ -1374,8 +1374,8 @@ export function AdminPosts() {
               onChange={(e) => setForm((prev) => ({ ...prev, targetUrl: e.target.value }))}
               fullWidth
               required
-              placeholder="https://example.com/index.html"
-              helperText="支持部署后的 index.html 或其他 http/https 网页地址，将在当前文章页内加载。"
+              placeholder="/软件库.html 或 https://example.com/index.html"
+              helperText="支持 public 目录中的站内 HTML（如 /软件库.html）或 http/https 网页地址，将在当前文章页内加载。"
             />
           )}
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', minWidth: 0 }}>

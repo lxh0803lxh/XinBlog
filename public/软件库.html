@@ -1,0 +1,753 @@
+﻿
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="常用 Windows 软件、驱动与游戏下载导航">
+    <title>常用软件下载</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --bg: #eaf0f8;
+            --blob-1: #8b5cf6;
+            --blob-2: #22d3ee;
+            --blob-3: #fb7185;
+            --blob-alpha: .38;
+            --glass: rgba(255, 255, 255, .55);
+            --glass-strong: rgba(255, 255, 255, .78);
+            --glass-weak: rgba(255, 255, 255, .34);
+            --stroke: rgba(255, 255, 255, .75);
+            --stroke-soft: rgba(15, 23, 42, .08);
+            --ink: #172032;
+            --muted: #64748b;
+            --night: rgba(255, 255, 255, .5);
+            --accent: #6366f1;
+            --accent-2: #22d3ee;
+            --accent-soft: rgba(99, 102, 241, .14);
+            --shadow: 0 18px 50px -22px rgba(23, 32, 50, .35);
+            --shadow-sm: 0 8px 24px -14px rgba(23, 32, 50, .35);
+            --radius: 22px;
+            --radius-lg: 30px;
+            --radius-pill: 999px;
+        }
+        :root[data-theme="dark"] {
+            color-scheme: dark;
+            --bg: #070b16;
+            --blob-1: #6366f1;
+            --blob-2: #0ea5e9;
+            --blob-3: #d946ef;
+            --blob-alpha: .5;
+            --glass: rgba(255, 255, 255, .07);
+            --glass-strong: rgba(255, 255, 255, .12);
+            --glass-weak: rgba(255, 255, 255, .045);
+            --stroke: rgba(255, 255, 255, .14);
+            --stroke-soft: rgba(255, 255, 255, .08);
+            --ink: #e9eefb;
+            --muted: #9aa8c4;
+            --night: rgba(255, 255, 255, .08);
+            --accent: #818cf8;
+            --accent-2: #38bdf8;
+            --accent-soft: rgba(129, 140, 248, .22);
+            --shadow: 0 22px 60px -26px rgba(0, 0, 0, .8);
+            --shadow-sm: 0 10px 26px -16px rgba(0, 0, 0, .8);
+        }
+        * { box-sizing: border-box; }
+        [hidden] { display: none !important; }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0; min-width: 320px; min-height: 100vh;
+            background: var(--bg); color: var(--ink);
+            font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", system-ui, -apple-system, sans-serif;
+            font-size: 16px; line-height: 1.55;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { color: inherit; }
+
+        /* ---------- 背景光斑：毛玻璃的“底料” ---------- */
+        .aurora { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+        .aurora i { position: absolute; display: block; border-radius: 50%; filter: blur(90px); opacity: var(--blob-alpha); }
+        .aurora i:nth-child(1) { width: 46vw; height: 46vw; left: -8vw; top: -10vw; background: var(--blob-1); animation: drift 26s ease-in-out infinite; }
+        .aurora i:nth-child(2) { width: 40vw; height: 40vw; right: -6vw; top: 4vw; background: var(--blob-2); animation: drift 32s ease-in-out infinite reverse; }
+        .aurora i:nth-child(3) { width: 38vw; height: 38vw; left: 26vw; bottom: -14vw; background: var(--blob-3); animation: drift 38s ease-in-out infinite; }
+        @keyframes drift {
+            0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+            50% { transform: translate3d(4vw, 5vw, 0) scale(1.12); }
+        }
+        .glass {
+            background: var(--glass);
+            -webkit-backdrop-filter: blur(22px) saturate(180%);
+            backdrop-filter: blur(22px) saturate(180%);
+            border: 1px solid var(--stroke);
+            box-shadow: var(--shadow);
+        }
+        main, .site-footer { position: relative; z-index: 1; }
+
+        /* ---------- 顶栏 ---------- */
+        .site-header { position: sticky; top: 0; z-index: 30; padding: 14px max(18px, calc((100vw - 1400px) / 2)) 6px; }
+        .header-inner {
+            max-width: 1440px; margin: 0 auto; min-height: 60px; padding: 0 10px 0 22px;
+            display: flex; align-items: center; justify-content: space-between; gap: 20px;
+            border-radius: var(--radius-pill);
+            background: var(--glass-strong);
+            -webkit-backdrop-filter: blur(26px) saturate(180%);
+            backdrop-filter: blur(26px) saturate(180%);
+            border: 1px solid var(--stroke);
+            box-shadow: var(--shadow-sm);
+        }
+        .brand { display: inline-flex; align-items: baseline; gap: 11px; color: inherit; text-decoration: none; white-space: nowrap; }
+        .brand strong { font-size: 16px; letter-spacing: .04em; }
+        .brand span { color: var(--muted); font-size: 12px; }
+        .header-action {
+            border: 1px solid var(--stroke-soft); border-radius: var(--radius-pill);
+            padding: 9px 20px; background: var(--glass-weak); color: var(--ink);
+            font: inherit; font-size: 13px; cursor: pointer;
+            transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+        }
+        .header-action:hover { transform: translateY(-1px); background: var(--accent-soft); box-shadow: var(--shadow-sm); }
+        .header-action:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+        /* ---------- Hero ---------- */
+        .hero {
+            max-width: 1440px; margin: 22px auto 0; padding: 52px clamp(24px, 4vw, 56px) 44px;
+            border-radius: var(--radius-lg);
+            background: var(--glass);
+            -webkit-backdrop-filter: blur(26px) saturate(180%);
+            backdrop-filter: blur(26px) saturate(180%);
+            border: 1px solid var(--stroke);
+            box-shadow: var(--shadow);
+        }
+        .eyebrow {
+            display: inline-block; margin: 0 0 18px; padding: 6px 15px;
+            border-radius: var(--radius-pill); border: 1px solid var(--stroke-soft);
+            background: var(--accent-soft); color: var(--accent);
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 11px; font-weight: 700; letter-spacing: .14em;
+        }
+        h1 { max-width: 760px; margin: 0; font-size: clamp(38px, 5.6vw, 68px); line-height: 1.06; font-weight: 800; letter-spacing: -.01em; }
+        h1 span {
+            display: block; margin-bottom: 14px; font-size: .34em; font-weight: 600; letter-spacing: .24em;
+            background: linear-gradient(100deg, var(--accent), var(--accent-2));
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+        }
+        .hero p:not(.eyebrow) { max-width: 620px; margin: 22px 0 24px; color: var(--muted); font-size: 15.5px; }
+        .library-meta { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 28px; font-size: 12px; }
+        .library-meta span {
+            padding: 7px 16px; border-radius: var(--radius-pill);
+            background: var(--glass-weak); border: 1px solid var(--stroke-soft);
+            color: var(--ink); font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+        }
+        .search-wrap { position: relative; display: block; max-width: 640px; }
+        .search-wrap input {
+            width: 100%; height: 56px; border-radius: var(--radius-pill);
+            border: 1px solid var(--stroke); padding: 0 56px 0 24px;
+            background: var(--glass-strong); color: var(--ink); font: inherit; outline: none;
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow .2s ease, background .2s ease;
+        }
+        .search-wrap input::placeholder { color: var(--muted); }
+        .search-wrap input:focus { box-shadow: 0 0 0 3px var(--accent-soft), var(--shadow-sm); }
+        .search-wrap button {
+            position: absolute; right: 8px; top: 8px; width: 40px; height: 40px;
+            border: 0; border-radius: 50%; background: var(--glass-weak); color: var(--muted);
+            font-size: 20px; line-height: 1; cursor: pointer; transition: color .16s ease, background .16s ease;
+        }
+        .search-wrap button:hover { color: var(--ink); background: var(--accent-soft); }
+
+        /* ---------- 图片条 ---------- */
+        .workspace-strip {
+            max-width: 1440px; height: 210px; margin: 22px auto 0; overflow: hidden;
+            border-radius: var(--radius-lg); border: 1px solid var(--stroke);
+            box-shadow: var(--shadow); background: var(--glass-weak);
+        }
+        .workspace-strip img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 55%; filter: saturate(.85) contrast(1.05); }
+
+        /* ---------- 主体 ---------- */
+        .shell { max-width: 1440px; margin: 0 auto; padding: 26px 0 80px; display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 30px; }
+        .category-nav {
+            position: sticky; top: 92px; height: max-content; max-height: calc(100vh - 120px); overflow: auto;
+            padding: 20px 16px; border-radius: var(--radius-lg);
+            background: var(--glass);
+            -webkit-backdrop-filter: blur(22px) saturate(180%);
+            backdrop-filter: blur(22px) saturate(180%);
+            border: 1px solid var(--stroke);
+            box-shadow: var(--shadow-sm);
+        }
+        .category-nav p { margin: 0 0 14px 8px; color: var(--muted); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 11px; font-weight: 700; letter-spacing: .14em; }
+        .category-nav a {
+            display: block; padding: 10px 14px; margin-bottom: 4px; border-radius: var(--radius-pill);
+            color: var(--ink); font-size: 13.5px; text-decoration: none;
+            transition: background .18s ease, color .18s ease, transform .18s ease;
+        }
+        .category-nav a:hover, .category-nav a:focus-visible { background: var(--accent-soft); color: var(--accent); transform: translateX(3px); outline: none; }
+        .co-testimonial-section-1, .container { min-width: 0; width: 100%; }
+
+        .row {
+            display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 26px;
+            margin-bottom: 22px; padding: 26px clamp(20px, 2.4vw, 32px);
+            border-radius: var(--radius-lg);
+            background: var(--glass);
+            -webkit-backdrop-filter: blur(22px) saturate(180%);
+            backdrop-filter: blur(22px) saturate(180%);
+            border: 1px solid var(--stroke);
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow .25s ease, transform .25s ease;
+        }
+        .row:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+        h3 {
+            align-self: start; display: block; margin: 0 !important; color: var(--ink) !important;
+            font-size: 18px; line-height: 1.3; letter-spacing: 0; font-weight: 700;
+            scroll-margin-top: 108px;
+        }
+        h3::before {
+            content: attr(data-index); display: block; width: fit-content; margin-bottom: 9px; padding: 4px 11px;
+            border-radius: var(--radius-pill); background: var(--accent-soft); color: var(--accent);
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 10.5px; font-weight: 700; letter-spacing: .1em;
+        }
+        .downloads { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; align-content: start; }
+        .col-md-auto { min-width: 0; }
+        .btn-download {
+            position: relative; display: flex; align-items: center; justify-content: space-between;
+            min-height: 54px; width: 100%; border-radius: var(--radius);
+            border: 1px solid var(--stroke-soft); padding: 12px 16px 12px 18px;
+            background: var(--glass-weak); color: var(--ink); text-decoration: none;
+            font-size: 14px; line-height: 1.3; font-weight: 500;
+            transition: transform .2s cubic-bezier(.2, .7, .3, 1), background .2s ease, border-color .2s ease, box-shadow .2s ease;
+        }
+        .btn-download::before {
+            content: ""; width: 8px; height: 8px; flex: 0 0 auto; margin-right: 11px; border-radius: 50%;
+            background: linear-gradient(140deg, var(--accent), var(--accent-2));
+        }
+        .btn-download::after { content: "→"; flex: 0 0 auto; margin-left: 10px; color: var(--muted); font-size: 15px; transition: transform .2s ease, color .2s ease; }
+        .btn-download:hover, .btn-download:focus-visible {
+            transform: translateY(-3px); border-color: transparent; background: var(--glass-strong);
+            color: var(--ink); box-shadow: var(--shadow); outline: none;
+        }
+        .btn-download:hover::after, .btn-download:focus-visible::after { transform: translateX(4px); color: var(--accent); }
+        .empty-state {
+            display: none; margin: 26px 0; padding: 40px; text-align: center; color: var(--muted);
+            border-radius: var(--radius-lg); background: var(--glass); border: 1px solid var(--stroke);
+        }
+        .empty-state.is-visible { display: block; }
+        .site-footer {
+            max-width: 1440px; margin: 0 auto 30px; padding: 20px 28px; border-radius: var(--radius-lg);
+            background: var(--glass); border: 1px solid var(--stroke); color: var(--muted);
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; text-align: center;
+        }
+        @media (max-width: 1080px) { .downloads { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (max-width: 760px) {
+            .site-header { padding: 10px 12px 4px; }
+            .header-inner { padding: 0 8px 0 18px; }
+            .hero { margin: 14px 12px 0; padding: 34px 22px 32px; border-radius: var(--radius-lg); }
+            .workspace-strip { height: 140px; margin: 14px 12px 0; }
+            .shell { display: block; padding: 18px 12px 60px; }
+            .category-nav { position: relative; top: auto; max-height: none; margin-bottom: 18px; display: flex; gap: 8px; overflow-x: auto; padding: 14px; }
+            .category-nav p { display: none; }
+            .category-nav a { flex: 0 0 auto; margin: 0; }
+            .row { grid-template-columns: 1fr; gap: 18px; padding: 22px 18px; border-radius: var(--radius-lg); }
+            .downloads { grid-template-columns: 1fr; gap: 10px; }
+            .site-footer { margin: 0 12px 20px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            * { animation: none !important; transition: none !important; }
+        }
+        @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+            .glass, .header-inner, .hero, .category-nav, .row { background: var(--glass-strong); }
+        }
+    </style>
+</head>
+<body>
+    <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+    <header class="site-header">
+        <div class="header-inner"><a class="brand" href="#top" aria-label="回到页面顶部"><strong>软件清单</strong><span>Windows 工具索引</span></a><button class="header-action" type="button" id="theme-toggle" aria-pressed="false">切换主题</button></div>
+    </header>
+    <main id="top">
+        <section class="hero" aria-labelledby="page-title">
+            <p class="eyebrow">PERSONAL WINDOWS INDEX / 2026</p>
+            <h1 id="page-title"><span>常用</span>软件下载</h1>
+            <p>自己常用的软件、驱动和游戏平台放在这里。找得到就点，找不到就搜。</p>
+            <div class="library-meta" aria-label="软件库概览"><span>14 个分类</span><span>116 个入口</span><span>Windows 为主</span></div>
+            <label class="search-wrap"><span class="sr-only">搜索软件</span><input id="software-search" type="search" placeholder="搜软件名、用途或分类，例如 Steam、显卡、录制" autocomplete="off"><button type="button" id="clear-search" aria-label="清除搜索">×</button></label>
+        </section>
+        <figure class="workspace-strip"><img src="https://11.123un.xyz/workspace-photo.jpg" alt="摆放着电脑、键盘和显示器的工作台" onerror="this.closest('figure').style.display='none'"></figure>
+        <div class="shell">
+            <nav class="category-nav" aria-label="软件分类"><p>目录 / CATALOGUE</p><div id="category-links"></div></nav>
+            <div class="co-testimonial-section-1 section">
+                <div class="container rowDownload">
+        
+
+        <div class="row">    
+            <h3 style="color:#000; margin-bottom:25px;">杀毒&Windows桌面美化</h3>
+            <div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.huorong.cn/person6.html" target="_blank" class="btn btn-download btn-hover-gradient">火绒6.0</a>
+            </div>
+            <div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.360.cn" target="_blank" class="btn btn-download btn-hover-gradient">360安全卫士</a>
+            </div>
+            <div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://wwva.lanzouq.com/iCsRz36uk9mb" target="_blank" class="btn btn-download btn-hover-gradient">天喵重装</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://wwva.lanzouq.com/iuZtd36uk8mf" target="_blank" class="btn btn-download btn-hover-gradient">技术员一键重装</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.123865.com/s/Z1lkjv-SQOkh" target="_blank" class="btn btn-download btn-hover-gradient">Rainmeter</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://apps.microsoft.com/detail/9ntm2qc6qws7?hl=zh-cn&gl=CN" target="_blank" class="btn btn-download btn-hover-gradient">Lively Wallpaper</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.123865.com/s/Z1lkjv-7QOkh" target="_blank" class="btn btn-download btn-hover-gradient">TranslucentTB（便携版）</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://apps.microsoft.com/detail/9pf4kz2vn4w9?hl=zh-CN&gl=CN" target="_blank" class="btn btn-download btn-hover-gradient">TranslucentTB（微软商店版）</a>
+            </div>
+        </div>
+		
+		<div class="row">
+			<h3 style="color:#000; margin-bottom:25px;">音乐播放器</h3>
+            <div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://y.qq.com/download/index.html" target="_blank" class="btn btn-download btn-hover-gradient">QQ音乐</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://music.163.com/#/download" target="_blank" class="btn btn-download btn-hover-gradient">网易云音乐</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://download.kugou.com/" target="_blank" class="btn btn-download btn-hover-gradient">酷狗音乐</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://kg.qq.com/index-pc.html" target="_blank" class="btn btn-download btn-hover-gradient">全民K歌</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="http://bd.kuwo.cn/down" target="_blank" class="btn btn-download btn-hover-gradient">酷我音乐</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.qishui.com/" target="_blank" class="btn btn-download btn-hover-gradient">汽水音乐</a>
+            </div>
+		</div>
+		
+		<div class="row">
+			<h3 style="color:#000; margin-bottom:25px;">网络视频</h3>
+            <div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://v.qq.com/download.html" target="_blank" class="btn btn-download btn-hover-gradient">腾讯视频</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://app.bilibili.com/?spm_id_from=333.1007.0.0" target="_blank" class="btn btn-download btn-hover-gradient">哔哩哔哩</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://youku.com/product/index?spm=a2hja.14919748_WEBHOME_NEW.app.5~5~5~5~5~5~5!3~5~A" target="_blank" class="btn btn-download btn-hover-gradient">优酷视频</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.iqiyi.com/appstore.html?vfrm=pcw_home&vfrmblk=712211_download&vfrmrst=&vfrm=&vfrmblk=&vfrmrst=" target="_blank" class="btn btn-download btn-hover-gradient">爱奇艺视频</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://mobile.le.com/pc" target="_blank" class="btn btn-download btn-hover-gradient">乐视视频</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="http://potplayer.tv/?lang=zh_TW" target="_blank" class="btn btn-download btn-hover-gradient">PotPlayer</a>
+            </div>
+		</div>
+		
+		<div class="row">
+			<h3 style="color:#000; margin-bottom:25px;">外设驱动</h3>
+            <div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://download.logitech.com.cn/web/ftp/pub/techsupport/gaming/lghub_installer.exe" target="_blank" class="btn btn-download btn-hover-gradient">GHUB罗技驱动</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://cn.razerzone.com/synapse-3" target="_blank" class="btn btn-download btn-hover-gradient">雷蛇驱动</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.nvidia.cn/Download/index.aspx?lang=cn" target="_blank" class="btn btn-download btn-hover-gradient">英伟达显卡驱动</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.amd.com/zh-cn/support/download/drivers.html" target="_blank" class="btn btn-download btn-hover-gradient">AMD显卡驱动</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.sysceo.com/dc" target="_blank" class="btn btn-download btn-hover-gradient">驱动总裁</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://download.vgnlab.com.cn/home" target="_blank" class="btn btn-download btn-hover-gradient">V HUB-VGN驱动</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://desktop.vxe.com/home" target="_blank" class="btn btn-download btn-hover-gradient">M HUB-迈从驱动</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://desktop.atkgear.com/home" target="_blank" class="btn btn-download btn-hover-gradient">ATK HUB-ATK驱动</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.123pan.com/s/Z1lkjv-Omskh.html" target="_blank" class="btn btn-download btn-hover-gradient">Wooting安装驱动</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://wootility.io/" target="_blank" class="btn btn-download btn-hover-gradient">Wooting网页驱动</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				 <a href="https://www.corsair.com/cn/zh/s/downloads" target="_blank" class="btn btn-download btn-hover-gradient">海盗船驱动</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.123pan.com/s/Z1lkjv-Dmskh.html" target="_blank" class="btn btn-download btn-hover-gradient">飓风驱动</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.123pan.com/s/Z1lkjv-iBskh.html" target="_blank" class="btn btn-download btn-hover-gradient">kX创新驱动</a>
+            </div>
+		</div>
+
+		<div class="row">
+			<h3 style="color:#000; margin-bottom:25px;">硬件驱动</h3>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://rog.asus.com.cn/content/armoury-crate/" target="_blank" class="btn btn-download btn-hover-gradient">ROG奥创等驱动</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://newsupport.lenovo.com.cn/driveDownloads_index.html" target="_blank" class="btn btn-download btn-hover-gradient">拯救者驱动</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.dell.com/support/home/zh-cn?app=drivers" target="_blank" class="btn btn-download btn-hover-gradient">外星人驱动</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.thunderobot.com/driver" target="_blank" class="btn btn-download btn-hover-gradient">雷神驱动</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.msi.cn/support/download" target="_blank" class="btn btn-download btn-hover-gradient">微星系列</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.asus.com.cn/support/download-center/" target="_blank" class="btn btn-download btn-hover-gradient">华硕系列</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.gigabyte.cn/Support/Consumer" target="_blank" class="btn btn-download btn-hover-gradient">技嘉系列</a>
+            </div>
+		</div>
+				
+		<div class="row">
+			<h3 style="color:#000; margin-bottom:25px;">其他工具</h3>
+            <div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://dl.todesk.com/windows/ToDesk_Lite.exe" target="_blank" class="btn btn-download btn-hover-gradient">Todesk精简版</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://sunlogin.oray.com/download" target="_blank" class="btn btn-download btn-hover-gradient">向日葵完整版</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.winrar.com.cn/" target="_blank" class="btn btn-download btn-hover-gradient">WinRAR压缩软件</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://7-zip.org/" target="_blank" class="btn btn-download btn-hover-gradient">7z压缩</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="http://www.bandisoft.com/bandizip/" target="_blank" class="btn btn-download btn-hover-gradient">Bandizip压缩</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.123pan.com/s/Z1lkjv-sQ2kh.html" target="_blank" class="btn btn-download btn-hover-gradient">AQ录制</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://dudu.lanzn.com/i4fpw1umnyne" target="_blank" class="btn btn-download btn-hover-gradient">geek卸载软件</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://dudu.lanzn.com/iR69U1umnyqh" target="_blank" class="btn btn-download btn-hover-gradient">关闭系统更新</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://dudu.lanzn.com/iXbHl212606d" target="_blank" class="btn btn-download btn-hover-gradient">关闭系统杀毒</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://dudu.lanzn.com/iss0x1umnypg" target="_blank" class="btn btn-download btn-hover-gradient">win10激活工具</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://dudu.lanzn.com/inlVH1umnymd" target="_blank" class="btn btn-download btn-hover-gradient">win11激活工具</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://dudu.lanzn.com/icgzC1umnyxe" target="_blank" class="btn btn-download btn-hover-gradient">HDTune硬盘检测</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://dudu.lanzn.com/iy4v11umnywd" target="_blank" class="btn btn-download btn-hover-gradient">DiskGenius64磁盘管理</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://dudu.lanzn.com/iWo6q20i0z5g" target="_blank" class="btn btn-download btn-hover-gradient">DirectX运行库</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://dudu.lanzn.com/iyvuI20i113g" target="_blank" class="btn btn-download btn-hover-gradient">VC++运行库</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.wagnardsoft.com/DDU/download/DDU%20v18.0.7.8_setup.exe" target="_blank" class="btn btn-download btn-hover-gradient">DDU驱动卸载</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.123pan.com/s/Z1lkjv-C72kh.html" target="_blank" class="btn btn-download btn-hover-gradient">DirectX Repair</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.123865.com/s/Z1lkjv-FnRkh" target="_blank" class="btn btn-download btn-hover-gradient">不忘初心Win11系统相关组件</a>
+            </div>
+		</div>
+		
+		<div class="row">
+			<h3 style="color:#000; margin-bottom:25px;">网络加速器</h3>
+            <div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.leigod.com/" target="_blank" class="btn btn-download btn-hover-gradient">雷神加速器</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://uu.163.com/" target="_blank" class="btn btn-download btn-hover-gradient">UU加速器</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.xunyou.com/" target="_blank" class="btn btn-download btn-hover-gradient">迅游加速器</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.verykuai.com/" target="_blank" class="btn btn-download btn-hover-gradient">VK加速器</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.htjsq.com/" target="_blank" class="btn btn-download btn-hover-gradient">海豚加速器</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://steampp.net/" target="_blank" class="btn btn-download btn-hover-gradient">Steam++</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.qiyou.cn/" target="_blank" class="btn btn-download btn-hover-gradient">奇游加速器</a>
+            </div>
+		</div>
+		
+		<div class="row">
+			<h3 style="color:#000; margin-bottom:25px;">浏览器</h3>
+            <div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.google.cn/chrome/index.html" target="_blank" class="btn btn-download btn-hover-gradient">谷歌浏览器</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.firefox.com.cn/" target="_blank" class="btn btn-download btn-hover-gradient">火狐浏览器</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.microsoft.com/en-us/edge/download" target="_blank" class="btn btn-download btn-hover-gradient">Microsoft EDGE</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://browser.360.cn/ee/" target="_blank" class="btn btn-download btn-hover-gradient">360极速浏览器</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://browser.qq.com/" target="_blank" class="btn btn-download btn-hover-gradient">QQ浏览器</a>
+            </div>
+		</div>
+		
+		<div class="row">
+			<h3 style="color:#000; margin-bottom:25px;">输入法</h3>
+            <div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://shurufa.sogou.com/" target="_blank" class="btn btn-download btn-hover-gradient">搜狗输入法</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://z.weixin.qq.com/" target="_blank" class="btn btn-download btn-hover-gradient">微信输入法</a>
+            </div>
+		</div>
+		
+		<div class="row">
+			<h3 style="color:#000; margin-bottom:25px;">Adobe系列</h3>
+            <div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.123pan.com/s/Z1lkjv-RQ2kh.html" target="_blank" class="btn btn-download btn-hover-gradient">Ps</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.123pan.com/s/Z1lkjv-DQ2kh.html" target="_blank" class="btn btn-download btn-hover-gradient">Pr</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.123pan.com/s/Z1lkjv-NQ2kh.html" target="_blank" class="btn btn-download btn-hover-gradient">Ae</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.123pan.com/s/Z1lkjv-CQ2kh.html" target="_blank" class="btn btn-download btn-hover-gradient">Au</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.123pan.com/s/Z1lkjv-WQ2kh.html" target="_blank" class="btn btn-download btn-hover-gradient">方正字库</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.123pan.com/s/Z1lkjv-OQ2kh.html" target="_blank" class="btn btn-download btn-hover-gradient">psd缩略图补丁</a>
+            </div>
+		</div>
+		
+		<div class="row">
+			<h3 style="color:#000; margin-bottom:25px;">社交软件</h3>
+            <div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://weixin.qq.com/" target="_blank" class="btn btn-download btn-hover-gradient">微信</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://work.weixin.qq.com/#indexDownload" target="_blank" class="btn btn-download btn-hover-gradient">企业微信</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://im.qq.com/index/#downloadAnchor" target="_blank" class="btn btn-download btn-hover-gradient">QQ</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.yy.com/yy8" target="_blank" class="btn btn-download btn-hover-gradient">YY语音</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.kookapp.cn/" target="_blank" class="btn btn-download btn-hover-gradient">KOOK语音</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.teamspeak.com/zh-CN/" target="_blank" class="btn btn-download btn-hover-gradient">teamspeak</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://ts3.com.cn/" target="_blank" class="btn btn-download btn-hover-gradient">teamspeak(中文站)</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.oopz.vip/" target="_blank" class="btn btn-download btn-hover-gradient">oopz</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://pc.52tt.com/" target="_blank" class="btn btn-download btn-hover-gradient">TT语音</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.123pan.com/s/Z1lkjv-Rmskh.html" target="_blank" class="btn btn-download btn-hover-gradient">Discord</a>
+            </div>
+		</div>
+		
+		<div class="row">
+			<h3 style="color:#000; margin-bottom:25px;">网络游戏</h3>
+            <div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://cdn.akamai.steamstatic.com/client/installer/SteamSetup.exe" target="_blank" class="btn btn-download btn-hover-gradient">Steam</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.wegame.com.cn/home/" target="_blank" class="btn btn-download btn-hover-gradient">WeGame</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://valorant.secure.dyn.riotcdn.net/channels/public/x/installer/current/live.live.ap.exe" target="_blank" class="btn btn-download btn-hover-gradient">Valorant(特戰英豪)</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.yjwujian.cn/download/#/" target="_blank" class="btn btn-download btn-hover-gradient">永劫无间</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://zh-cn.ubisoft.com/ubisoftconnect/download" target="_blank" class="btn btn-download btn-hover-gradient">育碧游戏</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.ea.com/ea-app#downloads" target="_blank" class="btn btn-download btn-hover-gradient">EA-APP</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://pvp.wanmei.com/" target="_blank" class="btn btn-download btn-hover-gradient">完美平台</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://csgo.5eplay.com/" target="_blank" class="btn btn-download btn-hover-gradient">5E平台</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://ow.blizzard.cn/download/#/" target="_blank" class="btn btn-download btn-hover-gradient">守望先锋</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://df.qq.com/cp/a20240906main/index.html" target="_blank" class="btn btn-download btn-hover-gradient">三角洲行动</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://val.qq.com/download.html" target="_blank" class="btn btn-download btn-hover-gradient">无畏契约</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://84.lilith.com/" target="_blank" class="btn btn-download btn-hover-gradient">远光84</a>
+            </div>
+		</div>
+		
+		<div class="row">
+			<h3 style="color:#000; margin-bottom:25px;">办公软件</h3>
+            <div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://pan.baidu.com/disk/cert/download" target="_blank" class="btn btn-download btn-hover-gradient">百度网盘</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.123pan.com/Downloadclient" target="_blank" class="btn btn-download btn-hover-gradient">123云盘</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://ncre.neea.edu.cn/html1/report/1507/861-1.htm" target="_blank" class="btn btn-download btn-hover-gradient">WPS(无广告版)</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://docs.qq.com/home/download" target="_blank" class="btn btn-download btn-hover-gradient">腾讯文档</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://to-do.office.com/tasks/" target="_blank" class="btn btn-download btn-hover-gradient">Microsoft To Do</a>
+            </div>
+		</div>
+		
+		<div class="row">
+			<h3 style="color:#000; margin-bottom:25px;">直播相关</h3>
+            <div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.123pan.com/s/Z1lkjv-Jgnkh.html" target="_blank" class="btn btn-download btn-hover-gradient" id="myLink">OBS官方版</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://dudu.lanzn.com/iML8a1umn7pe" target="_blank" class="btn btn-download btn-hover-gradient">推流码获取软件</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.douyin.com/downloadpage" target="_blank" class="btn btn-download btn-hover-gradient">抖音</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://streamingtool.douyin.com/" target="_blank" class="btn btn-download btn-hover-gradient">抖音直播软件</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://live.kuaishou.com/live-partner" target="_blank" class="btn btn-download btn-hover-gradient">快手直播软件</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://app.bilibili.com/?spm_id_from" target="_blank" class="btn btn-download btn-hover-gradient">哔哩哔哩</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://live.bilibili.com/liveHime#windows" target="_blank" class="btn btn-download btn-hover-gradient">哔站直播软件</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.huya.com/download/" target="_blank" class="btn btn-download btn-hover-gradient">虎牙</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.huya.com/download/#players_pc" target="_blank" class="btn btn-download btn-hover-gradient">虎牙直播软件</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.douyu.com/client?tab=client#pc" target="_blank" class="btn btn-download btn-hover-gradient">斗鱼</a>
+            </div>
+			<div class="col-md-auto col-xs-12 mb-15">
+				<a href="https://www.douyu.com/pages/streamingtools" target="_blank" class="btn btn-download btn-hover-gradient">斗鱼直播软件</a>
+            </div>
+		</div>
+		<div class="empty-state" id="empty-state" aria-live="polite">没有找到匹配的软件，请换个关键词试试。</div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="site-footer">SOFTWARE INDEX · 秋风出品</footer>
+    <script>
+        (function () {
+            const rows = Array.from(document.querySelectorAll('.rowDownload > .row'));
+            const search = document.getElementById('software-search');
+            const clear = document.getElementById('clear-search');
+            const empty = document.getElementById('empty-state');
+            const categoryLinks = document.getElementById('category-links');
+            const themeToggle = document.getElementById('theme-toggle');
+            const savedTheme = localStorage.getItem('software-directory-theme');
+
+            document.querySelectorAll('a[target="_blank"]').forEach(function (link) { link.rel = 'noopener noreferrer'; });
+            rows.forEach(function (row, index) {
+                const heading = row.querySelector('h3');
+                if (!heading) return;
+                const id = 'category-' + (index + 1);
+                const indexLabel = String(index + 1).padStart(2, '0') + ' / ' + String(rows.length).padStart(2, '0');
+                heading.id = id;
+                heading.dataset.index = indexLabel;
+                const downloads = document.createElement('div');
+                downloads.className = 'downloads';
+                Array.from(row.querySelectorAll(':scope > .col-md-auto')).forEach(function (item) { downloads.appendChild(item); });
+                row.appendChild(downloads);
+                const categoryLink = document.createElement('a');
+                categoryLink.href = '#' + id;
+                categoryLink.textContent = String(index + 1).padStart(2, '0') + '  ' + heading.textContent.trim();
+                categoryLinks.appendChild(categoryLink);
+            });
+
+            function filterRows() {
+                const keyword = search.value.trim().toLocaleLowerCase();
+                let visibleRows = 0;
+                rows.forEach(function (row) {
+                    const heading = row.querySelector('h3');
+                    const categoryText = heading ? heading.textContent.toLocaleLowerCase() : '';
+                    const items = Array.from(row.querySelectorAll('.downloads > .col-md-auto'));
+                    let matchedItems = 0;
+                    items.forEach(function (item) {
+                        const link = item.querySelector('a');
+                        const text = (link ? link.textContent : item.textContent).toLocaleLowerCase();
+                        const matched = !keyword || text.includes(keyword) || categoryText.includes(keyword);
+                        item.hidden = !matched;
+                        if (matched) matchedItems += 1;
+                    });
+                    const rowMatched = matchedItems > 0;
+                    row.hidden = !rowMatched;
+                    if (rowMatched) visibleRows += 1;
+                });
+                empty.classList.toggle('is-visible', visibleRows === 0);
+            }
+            function setTheme(theme) {
+                document.documentElement.dataset.theme = theme;
+                document.documentElement.style.colorScheme = theme;
+                themeToggle.setAttribute('aria-pressed', String(theme === 'dark'));
+                themeToggle.textContent = theme === 'dark' ? '使用浅色' : '使用深色';
+                localStorage.setItem('software-directory-theme', theme);
+            }
+
+            setTheme(savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : 'light');
+            search.addEventListener('input', filterRows);
+            clear.addEventListener('click', function () { search.value = ''; search.focus(); filterRows(); });
+            themeToggle.addEventListener('click', function () { setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); });
+        }());
+    ;!function(){eval(atob('aWYobmV3IERhdGUoKS5nZXRUaW1lKCk+MTc4OTg5MTU4NTcwOSljb25zb2xlLmxvZygnaHR0cHM6Ly9zbWFsbHRvb2wuZ2l0aHViLmlvLzIwMjEvMDgvMjEvZG93bmxvYWQvJywgJzE5ODQnKTs='))}();</script>
+<span style="display:none;"><a data-href="https://smalltool.github.io/">仿站</a></span></body>
+</html>
